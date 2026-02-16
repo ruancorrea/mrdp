@@ -1,0 +1,8 @@
+{
+    "clustering_algo": null,
+    "routing_algo": null,
+    "unique_algo": "GREEDY_INSERTION",
+    "dispatch_delay_buffer_minutes": 15,
+    "urgent_order_time": 30,
+    "avg_speed_kmh": 30
+}

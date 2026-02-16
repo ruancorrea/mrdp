@@ -1,0 +1,1661 @@
+{
+  "name": "2024-01-01",
+  "region": "ma-al",
+  "origin": {
+    "lng": -35.739118,
+    "lat": -9.618276
+  },
+  "vehicle_capacity": 50,
+  "deliveries": [
+    {
+      "id": "27853",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 7,
+      "time": 28,
+      "timestamp": 136
+    },
+    {
+      "id": "27854",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 43,
+      "timestamp": 148
+    },
+    {
+      "id": "27856",
+      "point": {
+        "lng": -35.721956,
+        "lat": -9.6284871
+      },
+      "size": 1,
+      "preparation": 14,
+      "time": 39,
+      "timestamp": 166
+    },
+    {
+      "id": "27857",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 34,
+      "timestamp": 166
+    },
+    {
+      "id": "27858",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 56,
+      "timestamp": 187
+    },
+    {
+      "id": "27859",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 29,
+      "timestamp": 187
+    },
+    {
+      "id": "27862",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 21,
+      "time": 37,
+      "timestamp": 187
+    },
+    {
+      "id": "27860",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 33,
+      "timestamp": 191
+    },
+    {
+      "id": "27861",
+      "point": {
+        "lng": -35.7484338,
+        "lat": -9.6160875
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 42,
+      "timestamp": 191
+    },
+    {
+      "id": "27868",
+      "point": {
+        "lng": -35.7574033,
+        "lat": -9.605307
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 24,
+      "timestamp": 191
+    },
+    {
+      "id": "27863",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 9,
+      "time": 30,
+      "timestamp": 201
+    },
+    {
+      "id": "27864",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 41,
+      "timestamp": 201
+    },
+    {
+      "id": "27867",
+      "point": {
+        "lng": -35.7419526,
+        "lat": -9.6321474
+      },
+      "size": 1,
+      "preparation": 10,
+      "time": 25,
+      "timestamp": 201
+    },
+    {
+      "id": "27865",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 22,
+      "time": 44,
+      "timestamp": 209
+    },
+    {
+      "id": "27869",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 30,
+      "time": 56,
+      "timestamp": 209
+    },
+    {
+      "id": "27871",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 48,
+      "timestamp": 209
+    },
+    {
+      "id": "27870",
+      "point": {
+        "lng": -35.7325694,
+        "lat": -9.6372814
+      },
+      "size": 1,
+      "preparation": 27,
+      "time": 56,
+      "timestamp": 232
+    },
+    {
+      "id": "27872",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 44,
+      "timestamp": 232
+    },
+    {
+      "id": "27874",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 10,
+      "time": 29,
+      "timestamp": 232
+    },
+    {
+      "id": "27875",
+      "point": {
+        "lng": -35.7380331,
+        "lat": -9.5908531
+      },
+      "size": 1,
+      "preparation": 25,
+      "time": 55,
+      "timestamp": 238
+    },
+    {
+      "id": "27876",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 25,
+      "timestamp": 239
+    },
+    {
+      "id": "27879",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 27,
+      "time": 43,
+      "timestamp": 239
+    },
+    {
+      "id": "27877",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 18,
+      "time": 36,
+      "timestamp": 244
+    },
+    {
+      "id": "27881",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 29,
+      "time": 57,
+      "timestamp": 244
+    },
+    {
+      "id": "27884",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 8,
+      "time": 29,
+      "timestamp": 244
+    },
+    {
+      "id": "27880",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 7,
+      "time": 17,
+      "timestamp": 247
+    },
+    {
+      "id": "27886",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 21,
+      "time": 46,
+      "timestamp": 247
+    },
+    {
+      "id": "27883",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 20,
+      "timestamp": 249
+    },
+    {
+      "id": "27885",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 16,
+      "time": 26,
+      "timestamp": 254
+    },
+    {
+      "id": "27890",
+      "point": {
+        "lng": -35.7419526,
+        "lat": -9.6321474
+      },
+      "size": 1,
+      "preparation": 18,
+      "time": 28,
+      "timestamp": 254
+    },
+    {
+      "id": "27891",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 7,
+      "time": 26,
+      "timestamp": 254
+    },
+    {
+      "id": "27887",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 18,
+      "time": 35,
+      "timestamp": 270
+    },
+    {
+      "id": "27892",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 24,
+      "time": 49,
+      "timestamp": 270
+    },
+    {
+      "id": "27895",
+      "point": {
+        "lng": -35.7572043,
+        "lat": -9.6195126
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 48,
+      "timestamp": 270
+    },
+    {
+      "id": "27898",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 38,
+      "timestamp": 286
+    },
+    {
+      "id": "27899",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 14,
+      "time": 35,
+      "timestamp": 287
+    },
+    {
+      "id": "27889",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 19,
+      "time": 37,
+      "timestamp": 288
+    },
+    {
+      "id": "27893",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 13,
+      "time": 34,
+      "timestamp": 288
+    },
+    {
+      "id": "27896",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 29,
+      "time": 53,
+      "timestamp": 290
+    },
+    {
+      "id": "27900",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 45,
+      "timestamp": 292
+    },
+    {
+      "id": "27901",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 17,
+      "time": 27,
+      "timestamp": 292
+    },
+    {
+      "id": "27906",
+      "point": {
+        "lng": -35.7574033,
+        "lat": -9.605307
+      },
+      "size": 1,
+      "preparation": 7,
+      "time": 35,
+      "timestamp": 292
+    },
+    {
+      "id": "27902",
+      "point": {
+        "lng": -35.7306858,
+        "lat": -9.604452
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 33,
+      "timestamp": 300
+    },
+    {
+      "id": "27903",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 13,
+      "time": 31,
+      "timestamp": 300
+    },
+    {
+      "id": "27916",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 15,
+      "time": 42,
+      "timestamp": 300
+    },
+    {
+      "id": "27907",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 17,
+      "time": 28,
+      "timestamp": 311
+    },
+    {
+      "id": "27912",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 34,
+      "timestamp": 311
+    },
+    {
+      "id": "27917",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 15,
+      "time": 44,
+      "timestamp": 311
+    },
+    {
+      "id": "27909",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 16,
+      "timestamp": 321
+    },
+    {
+      "id": "27910",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 47,
+      "timestamp": 321
+    },
+    {
+      "id": "27925",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 9,
+      "time": 34,
+      "timestamp": 321
+    },
+    {
+      "id": "27931",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 27,
+      "time": 54,
+      "timestamp": 322
+    },
+    {
+      "id": "27913",
+      "point": {
+        "lng": -35.7535285,
+        "lat": -9.5813609
+      },
+      "size": 1,
+      "preparation": 18,
+      "time": 33,
+      "timestamp": 332
+    },
+    {
+      "id": "27924",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 30,
+      "time": 52,
+      "timestamp": 332
+    },
+    {
+      "id": "27936",
+      "point": {
+        "lng": -35.7380331,
+        "lat": -9.5908531
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 23,
+      "timestamp": 332
+    },
+    {
+      "id": "27944",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 6,
+      "time": 19,
+      "timestamp": 335
+    },
+    {
+      "id": "27918",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 23,
+      "time": 47,
+      "timestamp": 339
+    },
+    {
+      "id": "27920",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 33,
+      "timestamp": 339
+    },
+    {
+      "id": "27930",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 22,
+      "time": 43,
+      "timestamp": 339
+    },
+    {
+      "id": "27928",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 31,
+      "timestamp": 347
+    },
+    {
+      "id": "27932",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 37,
+      "timestamp": 347
+    },
+    {
+      "id": "27935",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 43,
+      "timestamp": 347
+    },
+    {
+      "id": "27945",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 57,
+      "timestamp": 348
+    },
+    {
+      "id": "27934",
+      "point": {
+        "lng": -35.7574033,
+        "lat": -9.605307
+      },
+      "size": 1,
+      "preparation": 17,
+      "time": 40,
+      "timestamp": 352
+    },
+    {
+      "id": "27941",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 29,
+      "time": 45,
+      "timestamp": 352
+    },
+    {
+      "id": "27942",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 18,
+      "time": 42,
+      "timestamp": 352
+    },
+    {
+      "id": "27955",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 10,
+      "time": 31,
+      "timestamp": 353
+    },
+    {
+      "id": "27938",
+      "point": {
+        "lng": -35.7371385,
+        "lat": -9.6664457
+      },
+      "size": 1,
+      "preparation": 30,
+      "time": 40,
+      "timestamp": 355
+    },
+    {
+      "id": "27940",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 50,
+      "timestamp": 355
+    },
+    {
+      "id": "27951",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 24,
+      "time": 40,
+      "timestamp": 370
+    },
+    {
+      "id": "27954",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 13,
+      "time": 34,
+      "timestamp": 370
+    },
+    {
+      "id": "27943",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 32,
+      "timestamp": 371
+    },
+    {
+      "id": "27948",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 29,
+      "timestamp": 371
+    },
+    {
+      "id": "27949",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 14,
+      "time": 43,
+      "timestamp": 372
+    },
+    {
+      "id": "27950",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 25,
+      "time": 36,
+      "timestamp": 373
+    },
+    {
+      "id": "27961",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 25,
+      "timestamp": 386
+    },
+    {
+      "id": "27962",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 7,
+      "time": 28,
+      "timestamp": 386
+    },
+    {
+      "id": "27965",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 37,
+      "timestamp": 386
+    },
+    {
+      "id": "27969",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 33,
+      "timestamp": 387
+    },
+    {
+      "id": "27953",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 11,
+      "time": 26,
+      "timestamp": 401
+    },
+    {
+      "id": "27958",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 23,
+      "time": 39,
+      "timestamp": 401
+    },
+    {
+      "id": "27959",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 30,
+      "time": 58,
+      "timestamp": 401
+    },
+    {
+      "id": "27960",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 10,
+      "time": 38,
+      "timestamp": 404
+    },
+    {
+      "id": "27964",
+      "point": {
+        "lng": -35.7058252,
+        "lat": -9.6178778
+      },
+      "size": 1,
+      "preparation": 23,
+      "time": 43,
+      "timestamp": 404
+    },
+    {
+      "id": "27966",
+      "point": {
+        "lng": -35.721956,
+        "lat": -9.6284871
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 52,
+      "timestamp": 404
+    },
+    {
+      "id": "27967",
+      "point": {
+        "lng": -35.7419526,
+        "lat": -9.6321474
+      },
+      "size": 1,
+      "preparation": 10,
+      "time": 20,
+      "timestamp": 409
+    },
+    {
+      "id": "27970",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 22,
+      "time": 40,
+      "timestamp": 409
+    },
+    {
+      "id": "27972",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 30,
+      "time": 40,
+      "timestamp": 412
+    },
+    {
+      "id": "27968",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 30,
+      "time": 56,
+      "timestamp": 419
+    },
+    {
+      "id": "27971",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 30,
+      "time": 48,
+      "timestamp": 419
+    },
+    {
+      "id": "27975",
+      "point": {
+        "lng": -35.721956,
+        "lat": -9.6284871
+      },
+      "size": 1,
+      "preparation": 14,
+      "time": 28,
+      "timestamp": 419
+    },
+    {
+      "id": "27979",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 16,
+      "time": 40,
+      "timestamp": 421
+    },
+    {
+      "id": "27973",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 23,
+      "time": 39,
+      "timestamp": 436
+    },
+    {
+      "id": "27981",
+      "point": {
+        "lng": -35.7380331,
+        "lat": -9.5908531
+      },
+      "size": 1,
+      "preparation": 29,
+      "time": 58,
+      "timestamp": 436
+    },
+    {
+      "id": "27982",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 27,
+      "time": 44,
+      "timestamp": 436
+    },
+    {
+      "id": "27974",
+      "point": {
+        "lng": -35.7419526,
+        "lat": -9.6321474
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 40,
+      "timestamp": 459
+    },
+    {
+      "id": "27983",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 51,
+      "timestamp": 459
+    },
+    {
+      "id": "27985",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 29,
+      "time": 48,
+      "timestamp": 460
+    },
+    {
+      "id": "27978",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 19,
+      "time": 46,
+      "timestamp": 467
+    },
+    {
+      "id": "27980",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 19,
+      "time": 48,
+      "timestamp": 467
+    },
+    {
+      "id": "27989",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 33,
+      "timestamp": 467
+    },
+    {
+      "id": "27986",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 6,
+      "time": 25,
+      "timestamp": 475
+    },
+    {
+      "id": "27987",
+      "point": {
+        "lng": -35.7380331,
+        "lat": -9.5908531
+      },
+      "size": 1,
+      "preparation": 12,
+      "time": 38,
+      "timestamp": 475
+    },
+    {
+      "id": "27991",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 41,
+      "timestamp": 475
+    },
+    {
+      "id": "27976",
+      "point": {
+        "lng": -35.7574033,
+        "lat": -9.605307
+      },
+      "size": 1,
+      "preparation": 24,
+      "time": 50,
+      "timestamp": 478
+    },
+    {
+      "id": "27988",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 21,
+      "time": 41,
+      "timestamp": 497
+    },
+    {
+      "id": "27992",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 17,
+      "time": 39,
+      "timestamp": 509
+    },
+    {
+      "id": "27993",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 16,
+      "timestamp": 509
+    },
+    {
+      "id": "27995",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 13,
+      "time": 34,
+      "timestamp": 514
+    },
+    {
+      "id": "27996",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 24,
+      "time": 41,
+      "timestamp": 514
+    },
+    {
+      "id": "27997",
+      "point": {
+        "lng": -35.7380331,
+        "lat": -9.5908531
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 54,
+      "timestamp": 514
+    },
+    {
+      "id": "27998",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 27,
+      "time": 57,
+      "timestamp": 519
+    },
+    {
+      "id": "27999",
+      "point": {
+        "lng": -35.721956,
+        "lat": -9.6284871
+      },
+      "size": 1,
+      "preparation": 22,
+      "time": 38,
+      "timestamp": 521
+    },
+    {
+      "id": "28000",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 27,
+      "time": 49,
+      "timestamp": 572
+    },
+    {
+      "id": "28001",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 41,
+      "timestamp": 572
+    },
+    {
+      "id": "28003",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 15,
+      "timestamp": 572
+    },
+    {
+      "id": "28004",
+      "point": {
+        "lng": -35.7509295,
+        "lat": -9.5943923
+      },
+      "size": 1,
+      "preparation": 22,
+      "time": 36,
+      "timestamp": 574
+    },
+    {
+      "id": "28005",
+      "point": {
+        "lng": -35.7380331,
+        "lat": -9.5908531
+      },
+      "size": 1,
+      "preparation": 10,
+      "time": 24,
+      "timestamp": 607
+    },
+    {
+      "id": "28006",
+      "point": {
+        "lng": -35.7380331,
+        "lat": -9.5908531
+      },
+      "size": 1,
+      "preparation": 18,
+      "time": 32,
+      "timestamp": 607
+    },
+    {
+      "id": "28007",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 25,
+      "time": 35,
+      "timestamp": 607
+    },
+    {
+      "id": "28008",
+      "point": {
+        "lng": -35.7484338,
+        "lat": -9.6160875
+      },
+      "size": 1,
+      "preparation": 18,
+      "time": 47,
+      "timestamp": 635
+    },
+    {
+      "id": "28012",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 7,
+      "time": 19,
+      "timestamp": 635
+    },
+    {
+      "id": "28011",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 51,
+      "timestamp": 654
+    },
+    {
+      "id": "28013",
+      "point": {
+        "lng": -35.7306858,
+        "lat": -9.604452
+      },
+      "size": 1,
+      "preparation": 27,
+      "time": 54,
+      "timestamp": 654
+    },
+    {
+      "id": "28014",
+      "point": {
+        "lng": -35.7535285,
+        "lat": -9.5813609
+      },
+      "size": 1,
+      "preparation": 9,
+      "time": 35,
+      "timestamp": 676
+    },
+    {
+      "id": "28016",
+      "point": {
+        "lng": -35.7419526,
+        "lat": -9.6321474
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 26,
+      "timestamp": 677
+    },
+    {
+      "id": "28017",
+      "point": {
+        "lng": -35.7058252,
+        "lat": -9.6178778
+      },
+      "size": 1,
+      "preparation": 6,
+      "time": 17,
+      "timestamp": 684
+    },
+    {
+      "id": "28020",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 22,
+      "time": 32,
+      "timestamp": 684
+    },
+    {
+      "id": "28019",
+      "point": {
+        "lng": -35.7469512,
+        "lat": -9.5934619
+      },
+      "size": 1,
+      "preparation": 24,
+      "time": 42,
+      "timestamp": 691
+    },
+    {
+      "id": "28022",
+      "point": {
+        "lng": -35.7380331,
+        "lat": -9.5908531
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 46,
+      "timestamp": 691
+    },
+    {
+      "id": "28023",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 29,
+      "time": 53,
+      "timestamp": 721
+    },
+    {
+      "id": "28031",
+      "point": {
+        "lng": -35.7574033,
+        "lat": -9.605307
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 19,
+      "timestamp": 721
+    },
+    {
+      "id": "28024",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 5,
+      "time": 33,
+      "timestamp": 723
+    },
+    {
+      "id": "28025",
+      "point": {
+        "lng": -35.7325694,
+        "lat": -9.6372814
+      },
+      "size": 1,
+      "preparation": 16,
+      "time": 31,
+      "timestamp": 723
+    },
+    {
+      "id": "28028",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 29,
+      "time": 41,
+      "timestamp": 751
+    },
+    {
+      "id": "28037",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 8,
+      "time": 32,
+      "timestamp": 751
+    },
+    {
+      "id": "28033",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 6,
+      "time": 36,
+      "timestamp": 756
+    },
+    {
+      "id": "28035",
+      "point": {
+        "lng": -35.7389067,
+        "lat": -9.6047767
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 33,
+      "timestamp": 756
+    },
+    {
+      "id": "28038",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 17,
+      "time": 28,
+      "timestamp": 771
+    },
+    {
+      "id": "28041",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 24,
+      "time": 41,
+      "timestamp": 771
+    },
+    {
+      "id": "28039",
+      "point": {
+        "lng": -35.7237673,
+        "lat": -9.5561682
+      },
+      "size": 1,
+      "preparation": 23,
+      "time": 34,
+      "timestamp": 786
+    },
+    {
+      "id": "28042",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 11,
+      "time": 21,
+      "timestamp": 786
+    },
+    {
+      "id": "28045",
+      "point": {
+        "lng": -35.7752337,
+        "lat": -9.5885348
+      },
+      "size": 1,
+      "preparation": 9,
+      "time": 36,
+      "timestamp": 786
+    },
+    {
+      "id": "28048",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 31,
+      "timestamp": 805
+    },
+    {
+      "id": "28043",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 21,
+      "time": 43,
+      "timestamp": 817
+    },
+    {
+      "id": "28044",
+      "point": {
+        "lng": -35.721639,
+        "lat": -9.6024662
+      },
+      "size": 1,
+      "preparation": 26,
+      "time": 36,
+      "timestamp": 817
+    },
+    {
+      "id": "28050",
+      "point": {
+        "lng": -35.7192917,
+        "lat": -9.6189777
+      },
+      "size": 1,
+      "preparation": 28,
+      "time": 46,
+      "timestamp": 818
+    },
+    {
+      "id": "28047",
+      "point": {
+        "lng": -35.7347635,
+        "lat": -9.6499931
+      },
+      "size": 1,
+      "preparation": 11,
+      "time": 41,
+      "timestamp": 830
+    },
+    {
+      "id": "28049",
+      "point": {
+        "lng": -35.7342209,
+        "lat": -9.6208518
+      },
+      "size": 1,
+      "preparation": 20,
+      "time": 30,
+      "timestamp": 830
+    },
+    {
+      "id": "28052",
+      "point": {
+        "lng": -35.7325694,
+        "lat": -9.6372814
+      },
+      "size": 1,
+      "preparation": 29,
+      "time": 48,
+      "timestamp": 831
+    }
+  ]
+}
