@@ -26,6 +26,8 @@ class Core:
         self.dispatch_delay_buffer_minutes = timedelta(minutes=config.dispatch_delay_buffer_minutes)
         self.urgent_order_time = timedelta(minutes=config.urgent_order_time)
         self.avg_speed_kmh = config.avg_speed_kmh
+        # Lê a política escolhida. Por padrão usa 'DYNAMIC' (ASAP+JIT)
+        self.dispatch_policy = getattr(config, 'dispatch_policy', 'DYNAMIC').upper()
 
         self.vehicles: Dict[int, Vehicle] = {v.id: v for v in vehicles}
 
@@ -192,13 +194,22 @@ class Core:
         return asap_eval_dt
 
     def dispatch_policy_use(self, eligible_deliveries: list, current_time: datetime) -> bool:
+        if self.dispatch_policy == 'ONLY_ASAP':
+            print(f"[{current_time.strftime('%H:%M')}] Política de Despacho: ONLY_ASAP. Despachando imediatamente.")
+            return False
+            
+        if self.dispatch_policy == 'ONLY_JIT':
+            print(f"[{current_time.strftime('%H:%M')}] Política de Despacho: ONLY_JIT. Aplicando retenção estratégica máxima.")
+            return True
+
+        # Lógica padrão: DYNAMIC (Ambas: JIT com gatilhos ASAP)
         urgent_orders = [
             d for d in eligible_deliveries
             if d.time_dt - current_time < self.urgent_order_time
         ]
         use_jit_policy = True
         if len(eligible_deliveries) > 5 or len(urgent_orders) > 0:
-            print(f"[{current_time.strftime('%H:%M')}] MODO DE URGÊNCIA ATIVADO. Despachando ASAP.")
+            print(f"[{current_time.strftime('%H:%M')}] Política DYNAMIC: MODO DE URGÊNCIA ATIVADO. Despachando ASAP.")
             use_jit_policy = False
 
         return use_jit_policy
