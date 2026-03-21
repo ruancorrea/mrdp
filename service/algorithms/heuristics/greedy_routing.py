@@ -12,15 +12,16 @@ from service.utils.time import Time
 @dataclass
 class GreedyRouting:
     '''
-    Implementa a heurística de Inserção Mais Barata para criar uma rota para um veículo.
+    Implementa a heurística de Inserção Mais Barata (Cheapest Insertion) adaptada para criar uma rota para um veículo.
+    Nesta variante para o MDRP-SU, o "custo" minimizado na inserção é a penalidade por atraso (SLA), e não apenas o tempo de viagem.
 
     A lógica é a seguinte:
     1.  Cria uma matriz de tempo de viagem entre o depósito e todas as entregas.
-    2.  Inicializa a rota com a entrega mais próxima do depósito.
+    2.  Inicializa uma rota vazia.
     3.  Iterativamente, para cada entrega ainda não roteirizada:
-        a. Encontra a posição na rota atual onde a inserção dessa entrega causa o menor aumento de tempo.
-        b. O custo de inserção de um ponto 'k' entre 'i' e 'j' é: tempo(i, k) + tempo(k, j) - tempo(i, j).
-    4.  Adiciona a entrega que tem o menor custo de inserção em sua melhor posição.
+        a. Avalia a inserção do nó candidato em todas as posições possíveis da rota atual.
+        b. O custo da inserção é obtido simulando a sequência completa com o evaluator, retornando a penalidade total baseada no tempo de preparo e nos prazos (SLA).
+    4.  Adiciona a entrega que causa o menor aumento na penalidade na sua melhor posição (usando o tempo de rota como desempate).
     5.  Repete até que todas as entregas estejam na rota.
     6.  Calcula os tempos de chegada, penalidades e outros detalhes.
     '''
@@ -32,6 +33,11 @@ class GreedyRouting:
     time_matrix: np.ndarray = field(init=False)
     num_deliveries: int = field(init=False)
     depot_idx: int = 0  # O depósito é sempre o índice 0 na matriz
+    p_min: Dict[int, float] = field(init=False)
+    t_min: Dict[int, float] = field(init=False)
+    ref_ts: float = field(init=False)
+    evaluator: Any = field(init=False)
+    time_converter: Any = field(init=False)
 
     def __post_init__(self):
         '''
@@ -50,6 +56,13 @@ class GreedyRouting:
         dist_matrix = get_distance_matrix(all_points)
         self.time_matrix = get_time_matrix(dist_matrix, self.avg_speed_kmh)
 
+        # Prepara dados para avaliação do SLA real nas tentativas de inserção
+        p_dt_map = {i: d.preparation_dt for i, d in enumerate(self.deliveries)}
+        t_dt_map = {i: d.time_dt for i, d in enumerate(self.deliveries)}
+        self.time_converter = Time()
+        self.p_min, self.t_min, self.ref_ts = self.time_converter.datetimes_map_to_minutes(p_dt_map, t_dt_map)
+        self.evaluator = Evaluate()
+
     def solve(self) -> Dict[str, Any]:
         '''
         Executa a heurística da inserção mais barata.
@@ -67,18 +80,13 @@ class GreedyRouting:
 
     def _initialize_route(self) -> Tuple[List[int], List[int]]:
         '''
-        Encontra a entrega mais próxima do depósito para iniciar a rota.
-        Retorna a rota inicial (com índices da matriz) e a lista de nós não visitados.
+        Inicia a rota vazia. A heurística de inserção descobrirá o melhor primeiro
+        nó priorizando as restrições de tempo/SLA ao invés de usar apenas distância física.
         '''
-        # Índices na matriz de tempo para as entregas são de 1 a n
-        times_from_depot = self.time_matrix[self.depot_idx][1:]
-        first_node_matrix_idx = np.argmin(times_from_depot) + 1
-
-        initial_route = [first_node_matrix_idx]
+        initial_route = []
 
         # Nós não visitados (índices da matriz: 1 a n)
         unvisited_nodes = list(range(1, self.num_deliveries + 1))
-        unvisited_nodes.remove(first_node_matrix_idx)
 
         return initial_route, unvisited_nodes
 
@@ -88,20 +96,34 @@ class GreedyRouting:
         Retorna o nó a ser inserido e a posição na rota.
         '''
         best_cost = float('inf')
+        best_route_time = float('inf')
         best_node_to_insert = -1
         best_position_in_route = -1
 
         for node_to_insert in unvisited_nodes:
             # Testa a inserção em todas as posições possíveis da rota.
-            # Se a rota é [A, B], as posições de inserção são 0 (antes de A), 1 (entre A,B), 2 (depois de B).
             for i in range(len(route) + 1):
-                prev_node = self.depot_idx if i == 0 else route[i-1]
-                next_node = self.depot_idx if i == len(route) else route[i]
+                candidate_route = route.copy()
+                candidate_route.insert(i, node_to_insert)
+                
+                # O evaluator espera os índices de 0 a n-1, não os da matriz global (1 a n)
+                candidate_seq = [idx - 1 for idx in candidate_route]
+                
+                eval_result = self.evaluator.evaluate_sequence(
+                    sequence=candidate_seq,
+                    time_matrix=self.time_matrix,
+                    p_min=self.p_min,
+                    t_min=self.t_min,
+                    depot_index=self.depot_idx
+                )
 
-                cost = self.time_matrix[prev_node][node_to_insert] + self.time_matrix[node_to_insert][next_node] - self.time_matrix[prev_node][next_node]
+                cost = eval_result.total_penalty
+                route_time = eval_result.total_route_time
 
-                if cost < best_cost:
+                # Seleciona o que causa menor penalidade. Desempata por tempo mínimo de rota.
+                if cost < best_cost or (cost == best_cost and route_time < best_route_time):
                     best_cost = cost
+                    best_route_time = route_time
                     best_node_to_insert = node_to_insert
                     best_position_in_route = i
 
@@ -132,33 +154,25 @@ class GreedyRouting:
         # Converte os índices da rota (1..n) para os índices de entrega originais (0..n-1)
         route_delivery_indices = [idx - 1 for idx in route_matrix_indices]
 
-        # Prepara dados para a avaliação
-        p_dt_map = {i: d.preparation_dt for i, d in enumerate(self.deliveries)}
-        t_dt_map = {i: d.time_dt for i, d in enumerate(self.deliveries)}
-
-        time_converter = Time()
-        p_min, t_min, ref_ts = time_converter.datetimes_map_to_minutes(p_dt_map, t_dt_map)
-
-        evaluator = Evaluate()
-        eval_result = evaluator.evaluate_sequence(
+        eval_result = self.evaluator.evaluate_sequence(
             sequence=route_delivery_indices,
             time_matrix=self.time_matrix,
-            p_min=p_min,
-            t_min=t_min,
+            p_min=self.p_min,
+            t_min=self.t_min,
             depot_index=self.depot_idx
         )
 
         # Converte tempos de volta para datetime
-        start_datetime = time_converter.minutes_to_datetime(eval_result["start_time"], ref_ts)
-        return_datetime = start_datetime + timedelta(minutes=eval_result["total_route_time"])
+        start_datetime = self.time_converter.minutes_to_datetime(eval_result.start_time, self.ref_ts)
+        return_datetime = start_datetime + timedelta(minutes=eval_result.total_route_time)
 
-        arrival_datetimes = [time_converter.minutes_to_datetime(t, ref_ts) for t in eval_result["arrival_times"]]
+        arrival_datetimes = [self.time_converter.minutes_to_datetime(t, self.ref_ts) for t in eval_result.arrival_times]
         arrivals_map = {node_idx: arrival_datetimes[i] for i, node_idx in enumerate(route_delivery_indices)}
 
         return {
             "sequence": route_delivery_indices,
-            "total_penalty": eval_result["total_penalty"],
-            "total_route_time": eval_result["total_route_time"],
+            "total_penalty": eval_result.total_penalty,
+            "total_route_time": eval_result.total_route_time,
             "start_datetime": start_datetime,
             "return_depot": return_datetime,
             "arrivals_map": arrivals_map,
