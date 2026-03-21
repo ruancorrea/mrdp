@@ -3,8 +3,8 @@ import numpy as np
 
 from service.strategies.contracts import UniqueStrategy
 from service.utils.evaluate import Evaluate
-from service.utils.structures import Delivery, Vehicle
-from service.utils.distances import get_distance_matrix, get_time_matrix
+from service.utils.structures import Delivery, Point, Vehicle
+from service.utils.distances import get_distance_matrix, get_time_matrix, calculate_duration_matrix_m
 from service.utils import Time
 
 class GreedyUniqueStrategy(UniqueStrategy):
@@ -34,8 +34,10 @@ class GreedyUniqueStrategy(UniqueStrategy):
         delivery_map = {d.id: d for d in deliveries}
         delivery_ids = list(delivery_map.keys())
 
+        depot_origin = Point(lng=depot_origin[0], lat=depot_origin[1])
+
         all_points = np.array(
-            [depot_origin.tolist()] + [[d.point.lng, d.point.lat] for d in deliveries]
+            [depot_origin] + [[d.point] for d in deliveries]
         )
 
         # Mapeia IDs de entrega para índices na matriz de distância/tempo
@@ -43,9 +45,9 @@ class GreedyUniqueStrategy(UniqueStrategy):
         idx_to_id = {i + 1: d_id for i, d_id in enumerate(delivery_ids)}
         depot_idx = 0
 
-        distance_matrix = get_distance_matrix(all_points)
-        time_matrix = get_time_matrix(distance_matrix, avg_speed_kmh)
-
+        #distance_matrix = get_distance_matrix(all_points)
+        #time_matrix = get_time_matrix(distance_matrix, avg_speed_kmh)
+        time_matrix = calculate_duration_matrix_m(all_points)
         # Converte datetimes para minutos
         p_dt_map = {id_to_idx[d.id]: d.preparation_dt for d in deliveries}
         t_dt_map = {id_to_idx[d.id]: d.time_dt for d in deliveries}

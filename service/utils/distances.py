@@ -1,4 +1,7 @@
+import requests
 import numpy as np
+from dataclasses import dataclass
+from typing import Iterable, Optional, Any
 from scipy.spatial.distance import cdist
 from math import radians, sin, cos, sqrt, atan2
 from service.utils.structures import Point
@@ -64,3 +67,81 @@ def get_time_matrix(distance_matrix: np.ndarray = None, average_speed_kmh: int =
     time_matrix_minutes = time_matrix_hours * minutes_in_hour
 
     return time_matrix_minutes
+
+EARTH_RADIUS_METERS = 6371000
+
+
+@dataclass
+class OSRMConfig:
+    host: str = "http://localhost:5000"
+    timeout_s: int = 600
+
+def calculate_duration_matrix_m(
+    points: Iterable[Point], config: Optional[OSRMConfig] = None
+):
+    """Calculate the duration matrix in meters using OSRM."""
+    config = config or OSRMConfig()
+
+    if len(points) < 2:
+        return 0
+
+    coords_uri = ";".join(
+        ["{},{}".format(point.lng, point.lat) for point in points]
+    )
+
+    response = requests.get(
+        f"{config.host}/table/v1/driving/{coords_uri}?annotations=duration",
+        timeout=config.timeout_s,
+    )
+
+    response.raise_for_status()
+
+    return np.array(response.json()["durations"]) / 60 # deixando em minutos
+
+def calculate_distance_matrix_m(
+    points: Iterable[Point], config: Optional[OSRMConfig] = None
+):
+    """Calculate the distance matrix in meters using OSRM."""
+    config = config or OSRMConfig()
+
+    if len(points) < 2:
+        return 0
+
+    coords_uri = ";".join(
+        ["{},{}".format(point.lng, point.lat) for point in points]
+    )
+
+    response = requests.get(
+        f"{config.host}/table/v1/driving/{coords_uri}?annotations=distance",
+        timeout=config.timeout_s,
+    )
+
+    response.raise_for_status()
+
+    return np.array(response.json()["distances"])
+
+
+def calculate_route_distance_m(
+    points: Iterable[Point], config: Optional[OSRMConfig] = None
+):
+    """Calculate the total distance of a route defined by a list of points."""
+    config = config or OSRMConfig()
+
+    if len(points) < 2:
+        return 0
+
+    coords_uri = ";".join(
+        "{},{}".format(point.lng, point.lat) for point in points
+    )
+
+    response = requests.get(
+        f"{config.host}/route/v1/driving/{coords_uri}?annotations=distance&continue_straight=false",
+        timeout=config.timeout_s,
+    )
+
+    response.raise_for_status()
+
+    return min(r["distance"] for r in response.json()["routes"])
+
+
+

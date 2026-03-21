@@ -7,7 +7,7 @@ from service.algorithms.heuristics.manual_assignment import ManualAssignment
 from service.utils.evaluate import Evaluate
 from service.strategies.contracts import UniqueStrategy
 from service.utils.structures import Delivery, Vehicle, Point
-from service.utils.distances import get_time_matrix, get_distance_matrix
+from service.utils.distances import get_time_matrix, get_distance_matrix, calculate_duration_matrix_m
 
 class ManualAssignmentUnique(UniqueStrategy):
     def generate_solution(
@@ -26,14 +26,17 @@ class ManualAssignmentUnique(UniqueStrategy):
 
         # --- 1. Preparar Matrizes Globais e Mapeamentos ---
         all_points = [depot_point] + [d.point for d in deliveries]
+        delivery_to_matrix_idx = {d.id: i + 1 for i, d in enumerate(deliveries)}
+        '''
         all_points_np = np.array([[p.lat, p.lng] for p in all_points])
 
         # Mapeamento do ID da entrega para seu índice na matriz (offset por 1 devido ao depósito)
-        delivery_to_matrix_idx = {d.id: i + 1 for i, d in enumerate(deliveries)}
         matrix_idx_to_delivery = {i + 1: d for i, d in enumerate(deliveries)}
 
         dist_matrix_km = get_distance_matrix(all_points_np, metric='haversine')
         time_matrix_min = get_time_matrix(dist_matrix_km, avg_speed_kmh)
+        '''
+        time_matrix_min = calculate_duration_matrix_m(all_points)
         time = Time()
 
         # --- 2. Agrupar entregas por veículo ---

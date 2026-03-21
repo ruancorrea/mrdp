@@ -3,8 +3,8 @@ from typing import List, Dict, Any, Tuple
 import numpy as np
 from datetime import timedelta
 
-from service.utils.structures import Delivery
-from service.utils.distances import get_distance_matrix, get_time_matrix
+from service.utils.structures import Delivery, Point
+from service.utils.distances import get_distance_matrix, get_time_matrix, calculate_duration_matrix_m
 from service.utils.evaluate import Evaluate
 from service.utils.time import Time
 
@@ -48,13 +48,17 @@ class GreedyRouting:
             return
 
         self.num_deliveries = len(self.deliveries)
+        self.depot_origin = np.array(self.depot_origin)
+
+        depot_origin = Point(lng=self.depot_origin[0], lat=self.depot_origin[1])
 
         # Monta a matriz de pontos (depósito no índice 0, entregas de 1 a n)
         all_points = np.array(
-            [self.depot_origin.tolist()] + [[d.point.lat, d.point.lng] for d in self.deliveries]
+            [depot_origin] + [[d.point] for d in self.deliveries]
         )
-        dist_matrix = get_distance_matrix(all_points)
-        self.time_matrix = get_time_matrix(dist_matrix, self.avg_speed_kmh)
+        #dist_matrix = get_distance_matrix(all_points)
+        #self.time_matrix = get_time_matrix(dist_matrix, self.avg_speed_kmh)
+        self.time_matrix = calculate_duration_matrix_m(all_points)
 
         # Prepara dados para avaliação do SLA real nas tentativas de inserção
         p_dt_map = {i: d.preparation_dt for i, d in enumerate(self.deliveries)}

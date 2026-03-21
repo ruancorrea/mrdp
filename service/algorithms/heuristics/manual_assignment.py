@@ -19,6 +19,7 @@ class ManualAssignment:
     ) -> Dict[int, List[Delivery]]:
         '''
         Agrupa entregas para veículos com base em uma heurística manual simples.
+        Buscando simular a definição das rotas sem uso de algoritmos
         Opera com base em tempo de viagem, não mais em distância.
         Retorna um dicionário mapeando ID do veículo para uma lista de entregas.
         '''

@@ -1,15 +1,14 @@
 import random
-import math
 import numpy as np
 from copy import deepcopy
 from datetime import datetime, timezone, timedelta
+from typing import List, Dict, Any
 
 try:
     from zoneinfo import ZoneInfo
 except ImportError:
     ZoneInfo = None
 
-from service.utils.distances import get_distance_matrix, get_time_matrix
 from service.utils.time import Time
 from service.utils.evaluate import Evaluate
 
@@ -104,12 +103,12 @@ class BRKGA:
 
     def solve(
         self,
-        node_ids,
-        travel_time,
-        P_dt_map,
-        T_dt_map,
-        service_times=None,
-        depot_index=None
+        node_ids: List[int],
+        travel_time: List[List[float]],
+        P_dt_map: Dict[int, datetime],
+        T_dt_map: Dict[int, datetime],
+        service_times: Dict[int, float] =None,
+        depot_index: int =None
     ):
         P_min, T_min, ref_ts = self.time_helper.datetimes_map_to_minutes(P_dt_map, T_dt_map)
         n = len(node_ids)
@@ -197,29 +196,6 @@ class BRKGA:
         })
         return seq, ev, ev_with_dt
 
-def apply(data, origin, average_speed_kmh=30):
-    points = np.array([origin.tolist()] + [[b.point.lat, b.point.lng] for b in data])
-    preparations = {i: b.preparation_dt for i, b in enumerate(data)}
-    times = {i: b.time_dt for i, b in enumerate(data)}
-
-    distance_matrix = get_distance_matrix(points)
-    travel_time = get_time_matrix(distance_matrix, average_speed_kmh)
-
-    node_ids = list(range(len(data)))
-    service_times = {i: 2 for i in node_ids}
-
-    brkga_solver = BRKGA(pop_size=60, max_gens=200)
-    seq, ev_min, ev_dt = brkga_solver.solve(node_ids, travel_time, preparations, times,
-                                           service_times=service_times,
-                                           depot_index=0) # Depot is the first element in points
-
-    print("Sequence order (visit order):", seq)
-    print("Start datetime (route):", ev_dt.start_datetime)
-    print("Total penalty:", ev_min.total_penalty)
-    print("Total route time (min):", ev_min.total_route_time)
-    print("Expected delivery times per node (datetime):")
-    for node in seq:
-        print(f"  Node {node}: arrival={ev_dt['arrivals_map'][node]}, penalty={ev_dt['penalties_map'][node]}")
 
 if __name__ == "__main__":
     DEFAULT_TZ_NAME = "America/Sao_Paulo"

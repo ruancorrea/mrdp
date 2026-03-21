@@ -5,7 +5,7 @@ from copy import deepcopy
 from datetime import timedelta
 
 from service.utils.structures import Delivery, Vehicle, Point
-from service.utils.distances import get_distance_matrix, get_time_matrix
+from service.utils.distances import get_distance_matrix, get_time_matrix, calculate_duration_matrix_m
 from service.utils.time import Time
 from service.utils.evaluate import Evaluate
 
@@ -215,8 +215,10 @@ class BRKGAUnique:
 
         # Preparação de dados
         num_deliveries = len(deliveries)
-        all_points = np.array([depot_origin.tolist()] + [[d.point.lng, d.point.lat] for d in deliveries])
-        time_matrix = get_time_matrix(get_distance_matrix(all_points), self.avg_speed_kmh)
+        depot_origin = Point(lng=depot_origin[0], lat=depot_origin[1])
+        all_points = np.array([depot_origin()] + [[d.point] for d in deliveries])
+        #time_matrix = get_time_matrix(get_distance_matrix(all_points), self.avg_speed_kmh)
+        time_matrix = calculate_duration_matrix_m(all_points)
         id_to_idx = {d.id: i + 1 for i, d in enumerate(deliveries)}
         p_dt_map = {id_to_idx[d.id]: d.preparation_dt for d in deliveries}
         t_dt_map = {id_to_idx[d.id]: d.time_dt for d in deliveries}
