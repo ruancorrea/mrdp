@@ -28,7 +28,7 @@ class Core:
         self.avg_speed_kmh = config.avg_speed_kmh
         # Lê a política escolhida. Por padrão usa 'DYNAMIC' (ASAP+JIT)
         self.dispatch_policy = getattr(config, 'dispatch_policy', 'DYNAMIC').upper()
-
+        self.slack_usage_ratio=config.slack_usage_ratio
         self.vehicles: Dict[int, Vehicle] = {v.id: v for v in vehicles}
 
         self.clustering_strategy, self.routing_strategy, self.unique_strategy = get_strategies(config)
@@ -146,7 +146,7 @@ class Core:
             )
         return asap_routes_details
 
-    def _calculate_delayed_dispatch(self, asap_eval_dt: dict, node_map: dict, slack_usage_ratio: float = 0.5) -> dict:
+    def _calculate_delayed_dispatch(self, asap_eval_dt: dict, node_map: dict) -> dict:
         '''
         Calcula um novo horário de despacho atrasado (JIT) com base na folga da rota.
 
@@ -173,7 +173,7 @@ class Core:
                 min_slack = current_slack
 
         # A folga máxima que podemos usar é a menor folga da rota, menos nosso buffer de segurança
-        usable_delay = (min_slack - self.dispatch_delay_buffer_minutes) * slack_usage_ratio
+        usable_delay = (min_slack - self.dispatch_delay_buffer_minutes) * self.slack_usage_ratio
         usable_delay = max(timedelta(seconds=0), usable_delay) # Não podemos ter um atraso negativo
 
         # Se há um atraso útil, criamos um novo dicionário de resultados com tempos atualizados
