@@ -16,6 +16,7 @@ class UniqueAlgorithm(Enum):
     GREEDY_INSERTION = "greedy_insertion"
     BRKGA_UNIQUE = "brkga_unique"
     MANUAL = "manual"
+    MANUAL_CHINAINBOX = "manual_chinainbox"
 
 @dataclass
 class Config:
@@ -23,8 +24,9 @@ class Config:
     routing_algo: Optional[RoutingAlgorithm] = None
     unique_algo: Optional[UniqueAlgorithm] = None
     dispatch_delay_buffer_minutes: int = 15
-    urgent_order_time: int = 30
+    urgent_order_time: int = 20
     avg_speed_kmh: int = 30
+    slack_usage_ratio: float = 0.5
 
     def __str__(self):
         name = ''
@@ -52,7 +54,8 @@ class Config:
                 unique_algo=get_enum(UniqueAlgorithm, config_data.get("unique_algo")),
                 dispatch_delay_buffer_minutes=config_data.get("dispatch_delay_buffer_minutes", 15),
                 urgent_order_time=config_data.get("urgent_order_time", 30),
-                avg_speed_kmh=config_data.get("avg_speed_kmh", 30)
+                avg_speed_kmh=config_data.get("avg_speed_kmh", 30),
+                slack_usage_ratio=config_data.get("slack_usage_ratio", 0.5)
             )
         else:
             print(f"Aviso: {config_path} não encontrado. Usando configuração padrão.")

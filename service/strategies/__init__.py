@@ -5,6 +5,7 @@ from service.strategies.first_fit import FirstFit
 from service.strategies.greedy_routing import GreedyRouting
 from service.strategies.greedy_unique import GreedyUnique
 from service.strategies.manual_assingment_unique import ManualAssignmentUnique
+from service.strategies.manual_chinainbox_unique import ManualChinaInboxUnique
 from service.strategies.contracts import ClusteringStrategy, RoutingStrategy, UniqueStrategy
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "ClusteringStrategy",
     "RoutingStrategy",
     "UniqueStrategy",
+    "ManualChinaInboxUnique",
 ]

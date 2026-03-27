@@ -12,6 +12,7 @@ from service.strategies import (
     GreedyRouting,
     GreedyUnique,
     BRKGAUnique,
+    ManualChinaInboxUnique,
     ManualAssignmentUnique
 )
 
@@ -24,6 +25,7 @@ def get_strategies(config: Config):
             UniqueAlgorithm.GREEDY_INSERTION: GreedyUnique,
             UniqueAlgorithm.BRKGA_UNIQUE: BRKGAUnique,
             UniqueAlgorithm.MANUAL: ManualAssignmentUnique,
+            UniqueAlgorithm.MANUAL_CHINAINBOX: ManualChinaInboxUnique,
         }
         return None, None, unique_strategy_map[config.unique_algo]()
 
