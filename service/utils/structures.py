@@ -69,9 +69,13 @@ class Delivery:
 
         if self.timestamp_dt and self.preparation_dt is None:
             self.preparation_dt = self.timestamp_dt + timedelta(minutes=self.preparation)
-
+        '''
+        Formato anterior somando o time (que deveria ser o deadline com o tempo de preparo)
         if self.preparation_dt and self.time_dt is None:
             self.time_dt = self.preparation_dt + timedelta(minutes=self.time)
+        '''
+        if self.timestamp_dt and self.time_dt is None:
+            self.time_dt = self.timestamp_dt + timedelta(minutes=self.time)
 
     def to_dict(self):
         '''Converts the delivery object to a dictionary, handling datetimes.'''
