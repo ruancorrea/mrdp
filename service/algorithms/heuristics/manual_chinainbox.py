@@ -2,6 +2,7 @@ from typing import List, Dict
 import numpy as np
 
 from service.utils.structures import Delivery, Vehicle, Point
+from service.utils.distances import haversine_distance
 
 class ManualChinaInbox:
     def __init__(self, neighborhood_radius_km: float = 1.0):
@@ -60,8 +61,6 @@ class ManualChinaInbox:
 
     def _calculate_distance(self, point1: Point, point2: Point) -> float:
         '''
-        Calculates Euclidean distance between two points.
+        Calculates distance between two points in km using Haversine.
         '''
-        return np.sqrt(
-            (point1.lat - point2.lat)**2 + (point1.lng - point2.lng)**2
-        )
+        return haversine_distance(point1, point2)

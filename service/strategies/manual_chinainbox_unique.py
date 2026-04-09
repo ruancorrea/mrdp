@@ -7,7 +7,8 @@ from service.algorithms.heuristics.manual_chinainbox import ManualChinaInbox
 from service.utils.evaluate import Evaluate
 from service.strategies.contracts import UniqueStrategy
 from service.utils.structures import Delivery, Vehicle, Point
-from service.utils.distances import calculate_duration_matrix_m
+from service.utils.distances import build_time_matrix
+from service.algorithms.config import Config
 
 class ManualChinaInboxUnique(UniqueStrategy):
     def generate_solution(
@@ -15,9 +16,15 @@ class ManualChinaInboxUnique(UniqueStrategy):
         deliveries: List[Delivery],
         vehicles: List[Vehicle],
         depot_origin: np.array,
-        avg_speed_kmh: int
+        avg_speed_kmh: int,
+        distance_metric: str = 'osrm',
+        service_time_minutes: float = 0.0
     ) -> Dict[int, Dict[str, Any]]:
         print("  -> Usando Estratégia Híbrida: Manual ChinaInbox (com Penalidades)")
+
+        config = Config.load_config("config.json")
+        distance_metric = config.distance_metric.value if hasattr(config.distance_metric, 'value') else config.distance_metric
+        service_time_minutes = getattr(config, 'service_time_minutes', 0.0)
 
         if not deliveries or not vehicles:
             return {}
@@ -28,7 +35,7 @@ class ManualChinaInboxUnique(UniqueStrategy):
         all_points = [depot_point] + [d.point for d in deliveries]
         delivery_to_matrix_idx = {d.id: i + 1 for i, d in enumerate(deliveries)}
 
-        time_matrix_min = calculate_duration_matrix_m(all_points)
+        time_matrix_min = build_time_matrix(all_points, metric=distance_metric, avg_speed_kmh=avg_speed_kmh)
         time = Time()
 
         # --- 2. Agrupar entregas por veículo ---
@@ -58,6 +65,7 @@ class ManualChinaInboxUnique(UniqueStrategy):
             P_dt_map = {i: d.preparation_dt for i, d in delivery_map.items()}
             T_dt_map = {i: d.time_dt for i, d in delivery_map.items()}
             P_min, T_min, ref_ts = time.datetimes_map_to_minutes(P_dt_map, T_dt_map)
+            service_times_dict = {i: service_time_minutes for i in node_ids}
 
             # --- b. Chamar evaluate_sequence ---
             # A sequência aqui é simples, por ordem de agrupamento.
@@ -67,6 +75,7 @@ class ManualChinaInboxUnique(UniqueStrategy):
                 travel_time=route_time_matrix,
                 P_min=P_min,
                 T_min=T_min,
+                service_times=service_times_dict,
                 depot_index=0
             )
 
@@ -78,6 +87,11 @@ class ManualChinaInboxUnique(UniqueStrategy):
                 node: time.minutes_to_datetime(ev_min.arrival_times[i], ref_ts)
                 for i, node in enumerate(node_ids)
             }
+            
+            penalties_map = {
+                node: ev_min.penalties[i]
+                for i, node in enumerate(node_ids)
+            }
 
             ev_with_dt = deepcopy(ev_min.__dict__)
             ev_with_dt.update({
@@ -86,6 +100,7 @@ class ManualChinaInboxUnique(UniqueStrategy):
                 "arrival_datetimes": list(arrivals_map.values()),
                 "start_datetime": start_datetime,
                 "arrivals_map": arrivals_map,
+                "penalties_map": penalties_map,
                 "ref_timestamp_seconds": ref_ts,
                 "return_depot": return_time,
             })

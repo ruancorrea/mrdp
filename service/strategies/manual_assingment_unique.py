@@ -7,7 +7,8 @@ from service.algorithms.heuristics.manual_assignment import ManualAssignment
 from service.utils.evaluate import Evaluate
 from service.strategies.contracts import UniqueStrategy
 from service.utils.structures import Delivery, Vehicle, Point
-from service.utils.distances import get_time_matrix, get_distance_matrix, calculate_duration_matrix_m
+from service.utils.distances import build_time_matrix
+from service.algorithms.config import Config
 
 class ManualAssignmentUnique(UniqueStrategy):
     def generate_solution(
@@ -15,9 +16,15 @@ class ManualAssignmentUnique(UniqueStrategy):
         deliveries: List[Delivery],
         vehicles: List[Vehicle],
         depot_origin: np.array,
-        avg_speed_kmh: int
+        avg_speed_kmh: int,
+        distance_metric: str = 'osrm',
+        service_time_minutes: float = 0.0
     ) -> Dict[int, Dict[str, Any]]:
         print("  -> Usando Estratégia Híbrida: Manual Assignment (com Penalidades)")
+
+        config = Config.load_config("config.json")
+        distance_metric = config.distance_metric.value if hasattr(config.distance_metric, 'value') else config.distance_metric
+        service_time_minutes = getattr(config, 'service_time_minutes', 0.0)
 
         if not deliveries or not vehicles:
             return {}
@@ -27,16 +34,8 @@ class ManualAssignmentUnique(UniqueStrategy):
         # --- 1. Preparar Matrizes Globais e Mapeamentos ---
         all_points = [depot_point] + [d.point for d in deliveries]
         delivery_to_matrix_idx = {d.id: i + 1 for i, d in enumerate(deliveries)}
-        '''
-        all_points_np = np.array([[p.lat, p.lng] for p in all_points])
-
-        # Mapeamento do ID da entrega para seu índice na matriz (offset por 1 devido ao depósito)
-        matrix_idx_to_delivery = {i + 1: d for i, d in enumerate(deliveries)}
-
-        dist_matrix_km = get_distance_matrix(all_points_np, metric='haversine')
-        time_matrix_min = get_time_matrix(dist_matrix_km, avg_speed_kmh)
-        '''
-        time_matrix_min = calculate_duration_matrix_m(all_points)
+        
+        time_matrix_min = build_time_matrix(all_points, metric=distance_metric, avg_speed_kmh=avg_speed_kmh)
         time = Time()
 
         # --- 2. Agrupar entregas por veículo ---
@@ -68,6 +67,7 @@ class ManualAssignmentUnique(UniqueStrategy):
             P_dt_map = {i: d.preparation_dt for i, d in delivery_map.items()}
             T_dt_map = {i: d.time_dt for i, d in delivery_map.items()}
             P_min, T_min, ref_ts = time.datetimes_map_to_minutes(P_dt_map, T_dt_map)
+            service_times_dict = {i: service_time_minutes for i in node_ids}
 
             # --- b. Chamar evaluate_sequence ---
             # A sequência aqui é simples, por ordem de agrupamento.
@@ -77,6 +77,7 @@ class ManualAssignmentUnique(UniqueStrategy):
                 travel_time=route_time_matrix,
                 P_min=P_min,
                 T_min=T_min,
+                service_times=service_times_dict,
                 depot_index=0
             )
 

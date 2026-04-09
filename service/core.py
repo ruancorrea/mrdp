@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Dict
 from service.algorithms.config import Config
 from service.factory import get_strategies
-from service.utils import Monitor
+from service.utils import Monitor, Evaluate
 from service.utils.enums import EventType, VehicleStatus
 from service.utils.structures import Event, Vehicle, Delivery
 from service.utils.enums import OrderStatus
@@ -29,10 +29,15 @@ class Core:
         # Lê a política escolhida. Por padrão usa 'DYNAMIC' (ASAP+JIT)
         self.dispatch_policy = getattr(config, 'dispatch_policy', 'DYNAMIC').upper()
         self.slack_usage_ratio=config.slack_usage_ratio
+        self.shift_route_limit_ratio = getattr(config, 'shift_route_limit_ratio', 0.5)
         self.vehicles: Dict[int, Vehicle] = {v.id: v for v in vehicles}
 
         self.clustering_strategy, self.routing_strategy, self.unique_strategy = get_strategies(config)
         self.monitor = Monitor()
+        self.evaluator = Evaluate(
+            min_block=getattr(config, 'min_block', 5.0),
+            penalty_per_block=getattr(config, 'penalty_per_block', 100)
+        ) # Helper de cálculo de penalidade
 
     def add_delivery(self, delivery: Delivery) -> None:
         '''
@@ -79,10 +84,10 @@ class Core:
         return processed_events
 
     def _handle_order_created(self, event: Event, delivery: Delivery) -> None:
-        print(f'[{self.simulation_time.strftime('%H:%M')}] Evento: Pedido {delivery.id} foi criado.')
+        print(f"[{self.simulation_time.strftime('%H:%M')}] Evento: Pedido {delivery.id} foi criado.")
 
     def _handle_order_ready(self, event: Event, delivery: Delivery) -> None:
-        print(f'[{self.simulation_time.strftime('%H:%M')}] Evento: Pedido {delivery.id} está pronto (às {delivery.preparation_dt.strftime('%H:%M')})!')
+        print(f"[{self.simulation_time.strftime('%H:%M')}] Evento: Pedido {delivery.id} está pronto (às {delivery.preparation_dt.strftime('%H:%M')})!")
         delivery.status = OrderStatus.READY
 
     def _handle_pickup_deadline(self, event: Event, delivery: Delivery) -> None:
@@ -103,6 +108,20 @@ class Core:
         delivery.status = OrderStatus.DELIVERED
         delivery.completion_time = self.simulation_time  # Grava o horário da entrega
         self.monitor.total_deliveries_completed += 1
+
+        # Calcula a penalidade real da entrega baseada no momento da conclusão
+        lateness_minutes = (self.simulation_time - delivery.time_dt).total_seconds() / 60.0
+        delivery.penalty = self.evaluator.compute_penalty_from_arrival(lateness_minutes, 0.0)
+
+        vehicle = self.vehicles.get(delivery.assigned_vehicle_id)
+        if vehicle:
+            vehicle.completed_deliveries.append({
+                "delivery_id": delivery.id,
+                "expected_deadline": delivery.time_dt.strftime('%H:%M:%S'),
+                "completion_time": delivery.completion_time.strftime('%H:%M:%S'),
+                "penalty": delivery.penalty
+            })
+
         return {
             "type": "delivery_completed",
             "data": {
@@ -116,6 +135,7 @@ class Core:
         print(f"[{self.simulation_time.strftime('%H:%M')}] Evento: Veículo {vehicle.id} retornou ao depósito.")
         vehicle.status = VehicleStatus.IDLE
         vehicle.current_route = []
+        vehicle.completed_routes += 1
         vehicle.route_end_time = None
         return {
             "type": "driver_returned",
@@ -217,6 +237,9 @@ class Core:
 
     def update_state(self, asap_routes_details: dict, use_jit_policy: bool) -> None:
         dispatched_events = []
+        if not asap_routes_details:
+            return
+
         for vehicle_id, asap_eval_dt in asap_routes_details.items():
             if not asap_eval_dt: continue
 
@@ -228,6 +251,17 @@ class Core:
             jit_eval_dt = asap_eval_dt
             if use_jit_policy:
                 jit_eval_dt = self._calculate_delayed_dispatch(asap_eval_dt, node_map)
+
+            # Regra da duração da rota em relação ao limite do turno
+            route_time_minutes = jit_eval_dt["total_route_time"]
+            dispatch_time = jit_eval_dt["start_datetime"]
+            limit_route_time = timedelta(minutes=route_time_minutes * self.shift_route_limit_ratio)
+            
+            if hasattr(vehicle, 'shift_end') and vehicle.shift_end and (dispatch_time + limit_route_time > vehicle.shift_end):
+                print(f"  -> Rota rejeitada: {self.shift_route_limit_ratio * 100:.0f}% da duração da rota ({(route_time_minutes * self.shift_route_limit_ratio):.1f}m) ultrapassa o fim do turno do Veículo {vehicle.id} ({vehicle.shift_end.strftime('%H:%M')}).")
+                # Finaliza o turno do motorista precocemente para evitar loop infinito de tentativas e rejeições
+                vehicle.shift_end = self.simulation_time
+                continue
 
             # UPDATE STATE
             print(f"  -> Rota JIT definida para Veículo {vehicle.id}: Saída às {jit_eval_dt['start_datetime'].strftime('%H:%M')}, Retorno às {jit_eval_dt['return_depot'].strftime('%H:%M')}")
@@ -241,6 +275,12 @@ class Core:
             vehicle.status = VehicleStatus.ON_ROUTE
             vehicle.route_end_time = jit_eval_dt['return_depot']
             vehicle.current_route = [node_map[node_idx].id for node_idx in seq]
+            
+            if getattr(vehicle, 'is_dynamic', False):
+                # Encerra o turno do motorista dinâmico assim que ele concluir essa entrega isolada
+                vehicle.shift_end = vehicle.route_end_time
+                print(f"  -> O motorista dinâmico {vehicle.id} atuará de forma isolada e será dispensado às {vehicle.shift_end.strftime('%H:%M')}.")
+                
             dispatched_events.append({
                 "vehicle_id": vehicle.id,
                 "route": [node_map[node_idx].to_dict() for node_idx in seq],
@@ -272,8 +312,48 @@ class Core:
             d for d in self.active_deliveries.values()
             if d.status in [OrderStatus.READY, OrderStatus.PENDING]
         ]
-        available_vehicles = [v for v in self.vehicles.values() if v.status == VehicleStatus.IDLE]
-        if not eligible_deliveries or not available_vehicles:
+            
+        # Filtra os veículos que estão IDLE e dentro do horário de turno
+        available_vehicles = [
+            v for v in self.vehicles.values() 
+            if v.status == VehicleStatus.IDLE 
+            and getattr(v, 'shift_start', current_time) <= current_time < getattr(v, 'shift_end', current_time + timedelta(days=1))
+        ]
+
+        if not eligible_deliveries:
+            return
+            
+        if not available_vehicles:
+            # Lógica de chamada de Veículo Dinâmico (Crowdsourced)
+            dynamic_arrival_minutes = getattr(self.config, 'dynamic_arrival_minutes', 10)
+            dynamic_arrival_time = current_time + timedelta(minutes=dynamic_arrival_minutes)
+
+            # Verifica quando o próximo veículo (fixo ou dinâmico já a caminho) ficará disponível
+            incoming_vehicles = [
+                v.route_end_time for v in self.vehicles.values() 
+                if v.status == VehicleStatus.ON_ROUTE and v.route_end_time is not None
+                and getattr(v, 'shift_end', current_time + timedelta(days=1)) >= v.route_end_time
+            ]
+            
+            next_arrival_time = min(incoming_vehicles) if incoming_vehicles else None
+
+            # Se não há veículos em rota ou o próximo vai demorar mais que o dinâmico
+            if next_arrival_time is None or next_arrival_time > dynamic_arrival_time:
+                new_v_id = max(self.vehicles.keys()) + 1 if self.vehicles else 1
+                capacity = getattr(self.config, 'vehicle_capacity', 10)
+                
+                new_v = Vehicle(
+                    id=new_v_id,
+                    capacity=capacity,
+                    status=VehicleStatus.ON_ROUTE, # Fica ON_ROUTE para simular o tempo de deslocamento até o restaurante
+                    route_end_time=dynamic_arrival_time,
+                    shift_start=current_time,
+                    shift_end=current_time + timedelta(days=1), # Turno fictício longo para passar na validação dos 50%
+                    is_dynamic=True
+                )
+                self.vehicles[new_v_id] = new_v
+                self._schedule_event(EventType.VEHICLE_RETURN, dynamic_arrival_time, new_v_id)
+                print(f"[{current_time.strftime('%H:%M')}] ALERTA: Nenhum veículo disponível. VEÍCULO DINÂMICO ({new_v_id}) chamado, chegará às {dynamic_arrival_time.strftime('%H:%M')}.")
             return
 
         use_jit_policy = self.dispatch_policy_use(eligible_deliveries, current_time)
@@ -287,7 +367,7 @@ class Core:
         print(f'--- Iniciando Simulação em {start_time} ---')
 
         while self.simulation_time <= end_time:
-            print(f'\n--- Relógio: {self.simulation_time.strftime('%Y-%m-%d %H:%M')} ---')
+            print(f"\n--- Relógio: {self.simulation_time.strftime('%Y-%m-%d %H:%M')} ---")
             if self.simulation_time in incoming_deliveries_schedule:
                 for delivery in incoming_deliveries_schedule[self.simulation_time]:
                     self.add_delivery(delivery)

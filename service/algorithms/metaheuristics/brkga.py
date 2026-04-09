@@ -41,11 +41,9 @@ class BRKGA:
         while improved:
             improved = False
             n = len(best_seq)
-            for i in range(0, n-2):
-                for j in range(i+2, n):
-                    if i==0 and j==n-1:
-                        continue
-                    new_seq = best_seq[:i+1] + list(reversed(best_seq[i+1:j+1])) + best_seq[j+1:]
+            for i in range(n - 1):
+                for j in range(i + 1, n):
+                    new_seq = best_seq[:i] + best_seq[i:j+1][::-1] + best_seq[j+1:]
                     new_eval = evaluate_func(new_seq)
                     if (new_eval.total_penalty < best_eval.total_penalty) or \
                        (new_eval.total_penalty == best_eval.total_penalty and new_eval.total_route_time < best_eval.total_route_time):
@@ -62,12 +60,12 @@ class BRKGA:
         while improved:
             improved = False
             for i in range(n):
+                node_to_move = best_seq[i]
+                temp_seq = best_seq[:i] + best_seq[i+1:]
                 for j in range(n):
                     if i == j:
                         continue
-                    new_seq = best_seq.copy()
-                    node = new_seq.pop(i)
-                    new_seq.insert(j, node)
+                    new_seq = temp_seq[:j] + [node_to_move] + temp_seq[j:]
                     new_eval = evaluate_func(new_seq)
                     if (new_eval.total_penalty < best_eval.total_penalty) or \
                        (new_eval.total_penalty == best_eval.total_penalty and new_eval.total_route_time < best_eval.total_route_time):
@@ -225,10 +223,10 @@ if __name__ == "__main__":
                                            depot_index=depot_index)
 
     print("Sequence order (visit order):", seq)
-    print("Start datetime (route):", ev_dt.start_datetime)
+    print("Start datetime (route):", ev_dt["start_datetime"])
     print("Total penalty:", ev_min.total_penalty)
     print("Total route time (min):", ev_min.total_route_time)
-    print("Return to depot (arrival):", ev_dt.return_depot)
+    print("Return to depot (arrival):", ev_dt["return_depot"])
     print("Expected delivery times per node (datetime):")
     for node in seq:
         print(f"  Node {node}: arrival={ev_dt['arrivals_map'][node]}, penalty={ev_dt['penalties_map'][node]}")

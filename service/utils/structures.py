@@ -61,6 +61,7 @@ class Delivery:
     status: OrderStatus = field(default=OrderStatus.PENDING, compare=False, hash=False)
     dispatch_event_id: Optional[int] = field(default=None, compare=False, hash=False)
     assigned_vehicle_id: Optional[int] = field(default=None, compare=False, hash=False)
+    penalty: float = field(default=0.0, compare=False, hash=False)
 
     def __post_init__(self):
         '''Calcula os campos datetime se eles não forem fornecidos.'''
@@ -142,6 +143,12 @@ class Vehicle:
     status: VehicleStatus = VehicleStatus.IDLE
     current_route: list = field(default_factory=list) # Lista de IDs de Delivery
     route_end_time: Optional[datetime] = None # Quando o veículo volta a ficar IDLE
+    shift_start: Optional[datetime] = None # Início do turno de trabalho
+    shift_end: Optional[datetime] = None # Fim do turno de trabalho
+    is_dynamic: bool = False # Flag para identificar motorista chamado sob demanda
+    completed_deliveries: list = field(default_factory=list) # Histórico de entregas deste veículo
+    completed_routes: int = 0 # Contador de rotas finalizadas
+    label: Optional[str] = None # Agrupamento lógico (ex: turnos do mesmo motorista)
 
 _event_counter = 0
 def get_next_event_id():

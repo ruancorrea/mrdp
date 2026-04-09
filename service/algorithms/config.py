@@ -18,6 +18,11 @@ class UniqueAlgorithm(Enum):
     MANUAL = "manual"
     MANUAL_CHINAINBOX = "manual_chinainbox"
 
+class DistanceMetric(Enum):
+    OSRM = "osrm"
+    EUCLIDEAN = "euclidean"
+    HAVERSINE = "haversine"
+
 @dataclass
 class Config:
     clustering_algo: Optional[ClusteringAlgorithm] = None
@@ -27,6 +32,10 @@ class Config:
     urgent_order_time: int = 20
     avg_speed_kmh: int = 30
     slack_usage_ratio: float = 0.5
+    shift_route_limit_ratio: float = 0.5
+    min_block: float = 5.0
+    penalty_per_block: int = 100
+    distance_metric: DistanceMetric = DistanceMetric.OSRM
 
     def __str__(self):
         name = ''
@@ -55,7 +64,11 @@ class Config:
                 dispatch_delay_buffer_minutes=config_data.get("dispatch_delay_buffer_minutes", 15),
                 urgent_order_time=config_data.get("urgent_order_time", 30),
                 avg_speed_kmh=config_data.get("avg_speed_kmh", 30),
-                slack_usage_ratio=config_data.get("slack_usage_ratio", 0.5)
+                slack_usage_ratio=config_data.get("slack_usage_ratio", 0.5),
+                shift_route_limit_ratio=config_data.get("shift_route_limit_ratio", 0.5),
+                min_block=config_data.get("min_block", 5.0),
+                penalty_per_block=config_data.get("penalty_per_block", 100),
+                distance_metric=get_enum(DistanceMetric, config_data.get("distance_metric", "OSRM").upper())
             )
         else:
             print(f"Aviso: {config_path} não encontrado. Usando configuração padrão.")

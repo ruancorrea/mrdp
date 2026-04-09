@@ -5,7 +5,7 @@ from copy import deepcopy
 from datetime import timedelta
 
 from service.utils.structures import Delivery, Vehicle, Point
-from service.utils.distances import get_distance_matrix, get_time_matrix, calculate_duration_matrix_m
+from service.utils.distances import build_time_matrix
 from service.utils.time import Time
 from service.utils.evaluate import Evaluate
 
@@ -27,7 +27,9 @@ class BRKGAUnique:
         unassigned_penalty: int=100000,
         penalty_multiplier: int=1000,
         min_block_penalty: float=5.0,
-        penalty_per_block: int=100
+        penalty_per_block: int=100,
+        distance_metric: str='osrm',
+        service_time_minutes: float=0.0
     )-> None:
         '''
         Explicação:
@@ -48,6 +50,8 @@ class BRKGAUnique:
         self.avg_speed_kmh = avg_speed_kmh
         self.unassigned_penalty = unassigned_penalty
         self.penalty_multiplier = penalty_multiplier
+        self.distance_metric = distance_metric
+        self.service_time_minutes = service_time_minutes
 
         # Inicializa os ajudantes
         self.time_helper = Time() # Usa o fuso horário padrão
@@ -61,7 +65,8 @@ class BRKGAUnique:
         time_matrix: np.ndarray,
         p_min: np.ndarray,
         t_min: np.ndarray,
-        id_to_idx: Dict[str, int]
+        id_to_idx: Dict[str, int],
+        service_times: Dict[int, float]
     ) -> Dict[str, Any]:
         '''
         Decodifica um cromossomo (lista de chaves aleatórias) em uma solução de roteamento válida.
@@ -119,7 +124,7 @@ class BRKGAUnique:
 
                 for i in range(len(current_route_indices) + 1):
                     temp_route = current_route_indices[:i] + [delivery_idx] + current_route_indices[i:]
-                    eval_res = self.evaluate_helper.evaluate_sequence(temp_route, time_matrix, p_min, t_min, depot_index=0)
+                    eval_res = self.evaluate_helper.evaluate_sequence(temp_route, time_matrix, p_min, t_min, service_times=service_times, depot_index=0)
                     new_cost = eval_res.total_penalty * self.penalty_multiplier + eval_res.total_route_time
                     cost_increase = new_cost - original_cost
 
@@ -131,7 +136,7 @@ class BRKGAUnique:
                 routes[v_id].insert(best_insertion["position"], delivery.id)
                 remaining_capacities[v_id] -= delivery.size
                 updated_route_indices = [id_to_idx[d_id] for d_id in routes[v_id]]
-                final_eval = self.evaluate_helper.evaluate_sequence(updated_route_indices, time_matrix, p_min, t_min, depot_index=0)
+                final_eval = self.evaluate_helper.evaluate_sequence(updated_route_indices, time_matrix, p_min, t_min, service_times=service_times, depot_index=0)
                 route_costs[v_id] = final_eval.total_penalty * self.penalty_multiplier + final_eval.total_route_time
             else:
                 unassigned_penalty_total += self.unassigned_penalty
@@ -141,7 +146,7 @@ class BRKGAUnique:
         for vehicle_id, route_ids in routes.items():
             if route_ids:
                 route_indices = [id_to_idx[d_id] for d_id in route_ids]
-                final_eval = self.evaluate_helper.evaluate_sequence(route_indices, time_matrix, p_min, t_min, depot_index=0)
+                final_eval = self.evaluate_helper.evaluate_sequence(route_indices, time_matrix, p_min, t_min, service_times=service_times, depot_index=0)
                 total_penalty += final_eval.total_penalty
                 total_route_time += final_eval.total_route_time
 
@@ -157,7 +162,8 @@ class BRKGAUnique:
         p_min: np.ndarray,
         t_min: np.ndarray,
         ref_ts: int,
-        id_to_idx: Dict[str, int]
+        id_to_idx: Dict[str, int],
+        service_times: Dict[int, float]
     ) -> Dict[int, Dict[str, Any]]:
         '''
         Explicação:
@@ -166,7 +172,7 @@ class BRKGAUnique:
         e as enriquece com informações extras, como horários de chegada,
         penalidades e a sequência completa de paradas.
         '''
-        decoded = self._decode_chromosome(chromosome, deliveries, vehicles, time_matrix, p_min, t_min, id_to_idx)
+        decoded = self._decode_chromosome(chromosome, deliveries, vehicles, time_matrix, p_min, t_min, id_to_idx, service_times)
         routes = decoded.get("routes", {})
 
         solution = {}
@@ -177,7 +183,7 @@ class BRKGAUnique:
             if not route_ids: continue
 
             route_indices = [id_to_idx[d_id] for d_id in route_ids]
-            final_eval = self.evaluate_helper.evaluate_sequence(route_indices, time_matrix, p_min, t_min, depot_index=0)
+            final_eval = self.evaluate_helper.evaluate_sequence(route_indices, time_matrix, p_min, t_min, service_times=service_times, depot_index=0)
 
             arrival_datetimes = [self.time_helper.minutes_to_datetime(t, ref_ts) for t in final_eval.arrival_times]
             start_datetime = self.time_helper.minutes_to_datetime(final_eval.start_time, ref_ts)
@@ -216,13 +222,13 @@ class BRKGAUnique:
         # Preparação de dados
         num_deliveries = len(deliveries)
         depot_origin = Point(lng=depot_origin[0], lat=depot_origin[1])
-        all_points = np.array([depot_origin()] + [[d.point] for d in deliveries])
-        #time_matrix = get_time_matrix(get_distance_matrix(all_points), self.avg_speed_kmh)
-        time_matrix = calculate_duration_matrix_m(all_points)
+        all_points = np.array([depot_origin] + [[d.point] for d in deliveries])
+        time_matrix = build_time_matrix(all_points, metric=self.distance_metric, avg_speed_kmh=self.avg_speed_kmh)
         id_to_idx = {d.id: i + 1 for i, d in enumerate(deliveries)}
         p_dt_map = {id_to_idx[d.id]: d.preparation_dt for d in deliveries}
         t_dt_map = {id_to_idx[d.id]: d.time_dt for d in deliveries}
         p_min, t_min, ref_ts = self.time_helper.datetimes_map_to_minutes(p_dt_map, t_dt_map)
+        service_times_dict = {i: self.service_time_minutes for i in range(1, num_deliveries + 1)}
 
         population = [[random.random() for _ in range(num_deliveries)] for _ in range(self.pop_size)]
         best_fitness_ever = (float('inf'), float('inf'))
@@ -232,7 +238,7 @@ class BRKGAUnique:
         for gen in range(self.max_gens):
             fitness_results = []
             for chrom in population:
-                decoded = self._decode_chromosome(chrom, deliveries, vehicles, time_matrix, p_min, t_min, id_to_idx)
+                decoded = self._decode_chromosome(chrom, deliveries, vehicles, time_matrix, p_min, t_min, id_to_idx, service_times_dict)
                 fitness = (decoded["total_penalty"], decoded["total_route_time"])
                 fitness_results.append((fitness, chrom))
 
@@ -277,7 +283,8 @@ class BRKGAUnique:
             p_min,
             t_min,
             ref_ts,
-            id_to_idx
+            id_to_idx,
+            service_times_dict
         )
 
 '''

@@ -4,7 +4,7 @@ import numpy as np
 from datetime import timedelta
 
 from service.utils.structures import Delivery, Point
-from service.utils.distances import get_distance_matrix, get_time_matrix, calculate_duration_matrix_m
+from service.utils.distances import build_time_matrix
 from service.utils.evaluate import Evaluate
 from service.utils.time import Time
 
@@ -28,6 +28,8 @@ class GreedyRouting:
     deliveries: List[Delivery]
     depot_origin: np.ndarray
     avg_speed_kmh: int
+    distance_metric: str = 'osrm'
+    service_time_minutes: float = 0.0
 
     # Atributos que serão inicializados
     time_matrix: np.ndarray = field(init=False)
@@ -53,16 +55,12 @@ class GreedyRouting:
         depot_origin = Point(lng=self.depot_origin[0], lat=self.depot_origin[1])
 
         # Monta a matriz de pontos (depósito no índice 0, entregas de 1 a n)
-        all_points = np.array(
-            [depot_origin] + [[d.point] for d in self.deliveries]
-        )
-        #dist_matrix = get_distance_matrix(all_points)
-        #self.time_matrix = get_time_matrix(dist_matrix, self.avg_speed_kmh)
-        self.time_matrix = calculate_duration_matrix_m(all_points)
+        all_points = [depot_origin] + [d.point for d in self.deliveries]
+        self.time_matrix = build_time_matrix(all_points, metric=self.distance_metric, avg_speed_kmh=self.avg_speed_kmh)
 
         # Prepara dados para avaliação do SLA real nas tentativas de inserção
-        p_dt_map = {i: d.preparation_dt for i, d in enumerate(self.deliveries)}
-        t_dt_map = {i: d.time_dt for i, d in enumerate(self.deliveries)}
+        p_dt_map = {i + 1: d.preparation_dt for i, d in enumerate(self.deliveries)}
+        t_dt_map = {i + 1: d.time_dt for i, d in enumerate(self.deliveries)}
         self.time_converter = Time()
         self.p_min, self.t_min, self.ref_ts = self.time_converter.datetimes_map_to_minutes(p_dt_map, t_dt_map)
         self.evaluator = Evaluate()
@@ -110,14 +108,15 @@ class GreedyRouting:
                 candidate_route = route.copy()
                 candidate_route.insert(i, node_to_insert)
                 
-                # O evaluator espera os índices de 0 a n-1, não os da matriz global (1 a n)
-                candidate_seq = [idx - 1 for idx in candidate_route]
+                candidate_seq = candidate_route.copy()
+                service_times_dict = {idx: self.service_time_minutes for idx in candidate_seq}
                 
                 eval_result = self.evaluator.evaluate_sequence(
-                    sequence=candidate_seq,
-                    time_matrix=self.time_matrix,
-                    p_min=self.p_min,
-                    t_min=self.t_min,
+                    seq=candidate_seq,
+                    travel_time=self.time_matrix,
+                    P_min=self.p_min,
+                    T_min=self.t_min,
+                    service_times=service_times_dict,
                     depot_index=self.depot_idx
                 )
 
@@ -155,14 +154,13 @@ class GreedyRouting:
         '''
         Formata a rota final no padrão esperado pelo sistema.
         '''
-        # Converte os índices da rota (1..n) para os índices de entrega originais (0..n-1)
-        route_delivery_indices = [idx - 1 for idx in route_matrix_indices]
-
+        service_times_dict = {idx: self.service_time_minutes for idx in route_matrix_indices}
         eval_result = self.evaluator.evaluate_sequence(
-            sequence=route_delivery_indices,
-            time_matrix=self.time_matrix,
-            p_min=self.p_min,
-            t_min=self.t_min,
+            seq=route_matrix_indices,
+            travel_time=self.time_matrix,
+            P_min=self.p_min,
+            T_min=self.t_min,
+            service_times=service_times_dict,
             depot_index=self.depot_idx
         )
 
@@ -171,10 +169,13 @@ class GreedyRouting:
         return_datetime = start_datetime + timedelta(minutes=eval_result.total_route_time)
 
         arrival_datetimes = [self.time_converter.minutes_to_datetime(t, self.ref_ts) for t in eval_result.arrival_times]
-        arrivals_map = {node_idx: arrival_datetimes[i] for i, node_idx in enumerate(route_delivery_indices)}
+        
+        # Reverte os índices de 1..n para 0..n-1 para manter compatibilidade com o chamador
+        final_seq = [idx - 1 for idx in route_matrix_indices]
+        arrivals_map = {idx - 1: arrival_datetimes[i] for i, idx in enumerate(route_matrix_indices)}
 
         return {
-            "sequence": route_delivery_indices,
+            "sequence": final_seq,
             "total_penalty": eval_result.total_penalty,
             "total_route_time": eval_result.total_route_time,
             "start_datetime": start_datetime,

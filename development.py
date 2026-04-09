@@ -48,8 +48,8 @@ if __name__ == "__main__":
     delivery_for_time = get_delivery_for_time(all_deliveries_by_time[0])
 
     vehicles_list = [
-        Vehicle(id=1, capacity=90),
-        Vehicle(id=2, capacity=90),
+        Vehicle(id=1, capacity=90, shift_start=simulation_start_time, shift_end=simulation_end_time),
+        Vehicle(id=2, capacity=90, shift_start=simulation_start_time, shift_end=simulation_end_time),
     ]
 
     incoming_deliveries_schedule = defaultdict(list)
@@ -86,3 +86,5 @@ if __name__ == "__main__":
 
     output_processor.display_final_summary()
     output_processor.display_delivery_lifecycle()
+    output_processor.display_vehicle_summaries()
+    output_processor.export_vehicle_summary_json("vehicle_summary.json")

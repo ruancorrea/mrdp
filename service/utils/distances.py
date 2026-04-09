@@ -143,5 +143,15 @@ def calculate_route_distance_m(
 
     return min(r["distance"] for r in response.json()["routes"])
 
-
-
+def build_time_matrix(points: Iterable[Point], metric: str = 'osrm', avg_speed_kmh: int = 30) -> np.ndarray:
+    """
+    Unified function to calculate the time matrix dynamically based on the chosen metric.
+    metric can be 'osrm', 'euclidean' or 'haversine'.
+    """
+    metric_lower = metric.lower()
+    if metric_lower == 'osrm':
+        return calculate_duration_matrix_m(points)
+    else:
+        pts_array = np.array([[p.lat, p.lng] for p in points])
+        dist_matrix = get_distance_matrix(points=pts_array, metric=metric_lower)
+        return get_time_matrix(dist_matrix, avg_speed_kmh)
